@@ -5,7 +5,7 @@ import subprocess
 
 parser = OptionParser()
 
-parser.add_option('-c', '--channel',action="store",type="string",dest="channel",default="mu")
+parser.add_option('-c', '--channel',action="store",type="string",dest="channel",default="em")
 parser.add_option('--ntuple', action="store",type="string",dest="ntuple",default="WWTree_22sep_jecV7_lowmass")
 parser.add_option('--category', action="store",type="string",dest="category",default="HP")
 #parser.add_option('--type', action="store",type="string",dest="type",default="")
@@ -27,7 +27,8 @@ if not os.path.isdir(Ntuple_dir_name):
 
 #Ntuple_Path_lxplus="/afs/cern.ch/user/l/lbrianza/work/public/%s/"%options.ntuple
 samples=["BulkGraviton","Higgs"]
-lumi_float_true=2197.96;
+lumi_float_true=2300;
+#lumi_float_true=2197.96;
 luminosities=[lumi_float_true]
 
 
@@ -58,12 +59,12 @@ for lumi_float_value in luminosities:
                      
           if options.VBF_process: 
       
-             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter_mr/pseudoData/Ntuple_%s/Lumi_%s_VBF/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category,sample);
+             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter/pseudoData/Ntuple_%s/Lumi_%s_VBF/cards_%s_%s_VBF"%(options.ntuple,lumi_str,options.channel,options.category,sample);
              lumi_dir=Ntuple_dir_name+"/pseudoData/Lumi_%s_VBF"%lumi_str;
              
    
           else:
-             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter_mr/Ntuple_%s/pseudoData/Lumi_%s/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category);
+             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter/Ntuple_%s/pseudoData/Lumi_%s/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category);
              lumi_dir=Ntuple_dir_name+"/pseudoData/Lumi_%s"%lumi_str;
              
 
@@ -78,11 +79,11 @@ for lumi_float_value in luminosities:
                  os.system("mkdir "+truedata_dir);
           
           if options.VBF_process:
-             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter_mr/Ntuple_%s/trueData/Lumi_%s_VBF/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category);
+             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter/Ntuple_%s/trueData/Lumi_%s_VBF/cards_%s_%s_VBF"%(options.ntuple,lumi_str,options.channel,options.category);
              lumi_dir=Ntuple_dir_name+"/trueData/Lumi_%s_VBF"%lumi_str;
              
           else:
-             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter_mr/Ntuple_%s/trueData/Lumi_%s/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category);
+             datacards_dir_in="../../../CMSSW_5_3_13/src/EXOVVFitter/Ntuple_%s/trueData/Lumi_%s/cards_%s_%s"%(options.ntuple,lumi_str,options.channel,options.category);
              lumi_dir=Ntuple_dir_name+"/trueData/Lumi_%s"%lumi_str;
              
     
@@ -95,11 +96,17 @@ for lumi_float_value in luminosities:
                   exit();
     
     if options.copyDC:
+       print "\n\n\n----------------------------------------------------------\n"
+       print " COPY DATACARDS"
+       print " COPY DC FROM: %s"%datacards_dir_in
+       print " COPY DC TO: %s"%datacards_dir_out
+       
        if not os.path.isdir(datacards_dir_out):
               os.system("mkdir "+datacards_dir_out);
    
        p1 = subprocess.Popen(['cp','-r',datacards_dir_in,datacards_dir_out])
        p1.wait()
+       print "\n\n----------------------------------------------------------\n"
     
     
     for sample in samples:
@@ -122,20 +129,50 @@ for lumi_float_value in luminosities:
             
             else:
             '''
-            datacard_file_in=datacards_dir_out+"/cards_%s_%s/%s/wwlvj%s%s%s_%s_%s_lumi_%s_unbin.txt"%(options.channel,options.category,sample,tmp_vbf_name,sample,mass,options.channel,options.category,lumi_str)
-            datacard_file_out=datacards_dir_out+"/cards_%s_%s/%s/wwlvj_BulkGraviton_newxsec%s_%s_HP_unbin.txt"%(options.channel,options.category,sample,mass,channel_in)
-            p2 = subprocess.Popen(['cp',datacard_file_in,datacard_file_out])
-            p2.wait()
+            if options.VBF_process:
+               
+               print "\n\n\n----------------------------------------------------------\n"
+               print "\n VBF process\n"
+               print " RENAME DATACARDS"
+               
+               if options.channel=="em":
+                  datacard_file_in=datacards_dir_out+"/cards_%s_%s_VBF/%s/wwlvj_%s%s_%s_%s_lumi_%s_unbin.txt"%(options.channel,options.category,sample,sample,mass,options.channel,options.category,lumi_str)
+                  datacard_file_out=datacards_dir_out+"/cards_%s_%s_VBF/%s/wwlvj_BulkGraviton_newxsec%s_%s_2jet_HP_unbin.txt"%(options.channel,options.category,sample,mass,channel_in)
+               else:
+               
+                  datacard_file_in=datacards_dir_out+"/cards_%s_%s_VBF/%s/wwlvj_%s%s_%s_%s_lumi_%s_unbin.txt"%(options.channel,options.category,sample,sample,mass,options.channel,options.category,lumi_str)
+                  datacard_file_out=datacards_dir_out+"/cards_%s_%s_VBF/%s/wwlvj_BulkGraviton_newxsec%s_%s_HP_unbin.txt"%(options.channel,options.category,sample,mass,channel_in)
+               print "\n Datacard IN: %s"%datacard_file_in 
+               print "\n Datacard OUT: %s"%datacard_file_out 
+               
+               p2 = subprocess.Popen(['cp',datacard_file_in,datacard_file_out])
+               p2.wait()
+               print "\n\n----------------------------------------------------------\n"
+            else:
+               datacard_file_in=datacards_dir_out+"/cards_%s_%s/%s/wwlvj%s%s%s_%s_%s_lumi_%s_unbin.txt"%(options.channel,options.category,sample,tmp_vbf_name,sample,mass,options.channel,options.category,lumi_str)
+               datacard_file_out=datacards_dir_out+"/cards_%s_%s/%s/wwlvj_BulkGraviton_newxsec%s_%s_HP_unbin.txt"%(options.channel,options.category,sample,mass,channel_in)
+               p3 = subprocess.Popen(['cp',datacard_file_in,datacard_file_out])
+               p3.wait()
             
             
         
         if options.VBF_process:
+           print "\n\n\n----------------------------------------------------------\n"
+           print "\n VBF process\n"
+           print " MAKING LIMITS"
+           print " SAMPLE: %s"%sample
+           print "\n\n----------------------------------------------------------\n"
+           cards_dir=datacards_dir_out+"/cards_%s_%s_VBF/%s/"%(options.channel,options.category,sample)
            
-           cards_dir=datacards_dir_out+"/cards_%s_%s/%s/"%(options.channel,options.category,sample)
-           cmd="python MATTEO_runLimits.py -b --computeLimits --channel %s --datacardDIR %s --makeSMLimitPlot 1 --plotLimits 1 --systematics 1 --sample %s --vbf TRUE "%(options.channel,cards_dir,sample)
         
            #p2 = subprocess.Popen([cmd])
            #p2.wait()
+           if options.channel=="em":
+              cmd="python MATTEO_runLimits.py -b --computeLimits --channel %s --datacardDIR %s --makeSMLimitPlot 1 --plotLimits 1 --systematics 1 --sample %s --vbf TRUE --jetBin _2jet "%(options.channel,cards_dir,sample)
+           
+           else:
+              cmd="python MATTEO_runLimits.py -b --computeLimits --channel %s --datacardDIR %s --makeSMLimitPlot 1 --plotLimits 1 --systematics 1 --sample %s --vbf TRUE "%(options.channel,cards_dir,sample)
+           
            print cmd
            os.system(cmd)
         

@@ -147,6 +147,10 @@ shapeAlt = ["ExpTail"]
 #####################################
 sample_name=options.sample
 
+BulkGraviton_xsec=[0.177400,0.0331548,0.008993];
+VBF_BulkGraviton_xsec=[0.01089,0.00217,0.000655];
+Higgs_xsec=[0.33639,0.06765];
+VBF_Higgs_xsec=[0.03354,0.02375];
 
 if options.VBF_process:
    if sample_name.find('BulkGraviton') !=-1:
@@ -159,7 +163,7 @@ if options.VBF_process:
       mhi = [1500,2000,2500]
       shape = ["Exp","Exp","Exp"]
       shapeAlt = ["ExpTail","ExpTail","ExpTail"]
-      xsec_value = [0.010939,0.0021845,0.0006584]
+      xsec_value = VBF_BulkGraviton_xsec
       xsec_corr_value = [1.,1.,1.] 
 
      
@@ -174,7 +178,7 @@ if options.VBF_process:
       mhi = [1500,2000]
       shape = ["Exp","Exp"]
       shapeAlt = ["ExpTail","ExpTail"]
-      xsec_value = [0.067953,0.023859]
+      xsec_value = VBF_Higgs_xsec
       xsec_corr_value = [1.,1.,1.]
    
    
@@ -190,7 +194,7 @@ else:
       mhi = [1500,2000,2500]
       shape = ["Exp","Exp","Exp"]
       shapeAlt = ["Exp","ExpTail","ExpTail"]
-      xsec_value = [0.40683,0.07605,0.020499]
+      xsec_value = BulkGraviton_xsec
       xsec_corr_value = [1.,1.,1.] 
 
      
@@ -205,7 +209,7 @@ else:
       mhi = [1500,3000]
       shape = ["Exp","Exp"]
       shapeAlt = ["ExpTail","ExpTail"]
-      xsec_value = [0.19579,0.05041]
+      xsec_value = Higgs_xsec
       xsec_corr_value = [1.,1.,1.]
 
 points = []  
